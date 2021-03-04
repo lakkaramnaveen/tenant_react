@@ -1,13 +1,10 @@
 import './App.css';
-import Login from './components/Login';
-import UserComponent from './components/UserComponent';
+import React from 'react';
+import Login from './components/Login'
 
 function App() {
   return (
-    <div className="App">
-      <Login></Login>
-      <UserComponent></UserComponent>
-    </div>
+    <Login></Login>
   );
 }
 

@@ -1,49 +1,55 @@
-import React from 'react';
+import React, { useState } from "react";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 import axios from 'axios';
+import "./Login.css";
 
-class Login extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            flag: false,
-            name: '',
-            password: ''
-        }
-        //this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+export default function Login() {
+    const [name, setName] = useState("");
+    const [password, setPassword] = useState("");
+    const [flag, setFlag] = useState();
+    function validateForm() {
+        return name.length > 0 && password.length > 0;
     }
-    handleSubmit(event) {
-        //const { name, password } = this.state;
-        axios.get('http://localhost:9090/owner/login/chinni/admin/').then((response) => {
-            console.log("login response " + response.data)
-        }).catch((error) => {
-            console.log("login error" + error)
+
+    function handleSubmit(event) {
+        axios.get(`http://localhost:9090/owner/login/${name}/${password}`).then((resp) => {
+            setFlag(resp.data);
+            console.log(resp.data)
+            getUser();
         });
+        event.preventDefault();
     }
-    // handleChange(event) {
-    //     this.setState({ flag: false, name: event.target.value, password: event.target.value });
-    //     event.preventDefault();
-    // }
-    render() {
-        return (
-            <div>
-                <form onSubmit={this.handleSubmit}>
-                    {/* <label>
-                        UserName:
-                            <input type="text" name="name" onChange={this.handleChange} />
-                    </label>
-                    <br></br>
-                    <label>
-                        Password:
-                            <input type="password" name="password" onChange={this.handleChange} />
-                    </label> */}
-                    <button type="submit">Login</button>
-                </form>
-            </div>
-        );
+    function getUser() {
+        console.log("Nani")
+        if (flag === true) {
+            console.log("Chinni");
+        }
     }
-
-
+    return (
+        <div className="Login">
+            <Form onSubmit={handleSubmit}>
+                <Form.Group size="lg" controlId="email">
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control
+                        autoFocus
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                </Form.Group>
+                <Form.Group size="lg" controlId="password">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                </Form.Group>
+                <Button block size="lg" type="submit" disabled={!validateForm()}>
+                    Login
+                </Button>
+            </Form>
+        </div>
+    );
 }
-
-export default Login;
