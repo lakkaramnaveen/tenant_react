@@ -1,5 +1,5 @@
 import React from 'react';
-import UserService from '../services/UserService';
+import { getTenant } from '../services/UserService';
 
 class UserComponent extends React.Component {
     constructor(props) {
@@ -10,7 +10,7 @@ class UserComponent extends React.Component {
     }
 
     componentDidMount() {
-        UserService.getUser().then((response) => {
+        getTenant().then((response) => {
             this.setState({
                 users: response.data
             })
@@ -42,6 +42,7 @@ class UserComponent extends React.Component {
                         }
                     </tbody>
                 </table>
+                <button onClick={this.add} className="btn-success btn">Add Owner</button>
             </div>
         );
     }

@@ -1,55 +1,55 @@
-import React, { useState } from "react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
+import React, { Component } from "react";
 import axios from 'axios';
 import "./Login.css";
 
-export default function Login() {
-    const [name, setName] = useState("");
-    const [password, setPassword] = useState("");
-    const [flag, setFlag] = useState();
-    function validateForm() {
-        return name.length > 0 && password.length > 0;
+class Login extends Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            username: '',
+            password: '',
+            flag: false
+        }
+        this.handleUsername = this.handleUsername.bind(this)
+        this.handlePassword = this.handlePassword.bind(this)
+        this.onFormSubmit = this.onFormSubmit.bind(this)
     }
 
-    function handleSubmit(event) {
-        axios.get(`http://localhost:9090/owner/login/${name}/${password}`).then((resp) => {
-            setFlag(resp.data);
-            console.log(resp.data)
-            getUser();
+    handleUsername(event) {
+        this.setState({ username: event.target.value })
+    }
+    handlePassword(event) {
+        this.setState({ password: event.target.value })
+    }
+    onFormSubmit = () => {
+        axios.post(`http://localhost:9090/owner/login/${this.state.username}/${this.state.password}`).then((resp) => {
+            this.setState({ flag: true })
+            sessionStorage.setItem('username', this.state.username)
+            if (this.state.flag === true) {
+                this.props.history.push("/owner")
+            } else {
+                alert('invalid username/password')
+            }
+        }).catch(() => {
+            alert('Login not successful');
+            this.props.history.push("/login")
         });
-        event.preventDefault();
     }
-    function getUser() {
-        console.log("Nani")
-        if (flag === true) {
-            console.log("Chinni");
-        }
+
+    render() {
+        return (
+            <div>
+                <div>Username:</div>
+                <input type="text" onChange={this.handleUsername}></input>
+                <div>Password:</div>
+                <input type="password" onChange={this.handlePassword}></input>
+                <div>
+                    <button className="btn btn-primary" onClick={this.onFormSubmit}>Sign In</button>
+                </div>
+            </div>
+        )
     }
-    return (
-        <div className="Login">
-            <Form onSubmit={handleSubmit}>
-                <Form.Group size="lg" controlId="email">
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control
-                        autoFocus
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                </Form.Group>
-                <Form.Group size="lg" controlId="password">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </Form.Group>
-                <Button block size="lg" type="submit" disabled={!validateForm()}>
-                    Login
-                </Button>
-            </Form>
-        </div>
-    );
 }
+
+export default Login;

@@ -1,11 +1,17 @@
 import axios from 'axios';
 
-const USERS_REST_API_URL = 'http://localhost:9090/owner/tenant/';
-
-class UserService {
-    getUser() {
-        return axios.get(USERS_REST_API_URL);
-    }
+export function getTenant() {
+    return axios.get('http://localhost:9090/owner/tenant/');
 }
-
-export default new UserService();
+export function getOwner() {
+    return axios.get('http://localhost:9090/owner/');
+}
+export function addOwner(owner) {
+    return axios.post('http://localhost:9090/owner/', owner);
+}
+export function deleteOwner(id) {
+    return axios.delete(`http://localhost:9090/owner/${id}`);
+}
+export function updateOwner(owner) {
+    return axios.delete(`http://localhost:9090/owner/`, owner);
+}
